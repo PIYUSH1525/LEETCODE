@@ -3,6 +3,7 @@
 <p>&nbsp;</p>
 <p><strong class="example">Example 1:</strong></p>
 
+
 <pre>
 <strong>Input:</strong> x = 121
 <strong>Output:</strong> true
