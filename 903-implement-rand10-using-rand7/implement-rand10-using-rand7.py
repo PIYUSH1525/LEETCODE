@@ -8,9 +8,7 @@ class Solution:
         :rtype: int
         """
         while True:
-            row = rand7() - 1
-            col = rand7()
-            value = row * 7 + col
-            if value <= 40:
-                return value % 10 + 1
+            num = (rand7() - 1) * 7 + rand7()  # Gives 1 to 49
+            if num <= 40:
+                return num % 10 + 1
         
