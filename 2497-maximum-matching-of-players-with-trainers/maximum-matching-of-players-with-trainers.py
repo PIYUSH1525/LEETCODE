@@ -12,5 +12,4 @@ class Solution:
                 r+=1
             else:
                 r+=1
-        l+=1 
         return count 
