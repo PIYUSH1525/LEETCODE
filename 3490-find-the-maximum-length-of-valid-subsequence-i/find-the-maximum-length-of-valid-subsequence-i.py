@@ -1,14 +1,21 @@
 class Solution:
     def maximumLength(self, nums: List[int]) -> int:
-        k = 2
-        remainder_count = [[0] * k for _ in range(k)]
-        max_length = 0
+        count_even = 0
+        count_odd = 0
+
         for num in nums:
-            remainder = num % k
-            for j in range(k):
-                previous_remainder = (j - remainder + k) % k
-                remainder_count[remainder][previous_remainder] = remainder_count[previous_remainder][remainder] + 1
-               
-                max_length = max(max_length, remainder_count[remainder][previous_remainder])
-      
-        return max_length
+            if num % 2 == 0:
+                count_even += 1
+            else:
+                count_odd += 1
+
+        alt_len = 1  # At least one number
+        prev_parity = nums[0] % 2
+
+        for i in range(1, len(nums)):
+            curr_parity = nums[i] % 2
+            if curr_parity != prev_parity:
+                alt_len += 1
+                prev_parity = curr_parity
+
+        return max(count_even, count_odd, alt_len)
