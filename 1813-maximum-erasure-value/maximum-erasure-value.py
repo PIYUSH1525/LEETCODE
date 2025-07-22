@@ -15,14 +15,6 @@ class Solution:
 
         return maxx
 
-
-
-
-
-
-
-
-
         # for i in range(len(nums)):
         #     if nums[i] not in res:
         #         res.append(nums[i])
