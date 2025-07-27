@@ -1,13 +1,12 @@
 class Solution:
-    def countHillValley(self, nums: List[int]) -> int:
-        count = 0
-        last_significant_number_index = 0
-        for i in range(1, len(nums) - 1):
-            if nums[i] == nums[i + 1]:
-                continue
-            if nums[i] > nums[last_significant_number_index] and nums[i] > nums[i + 1]:
-                count += 1
-            elif nums[i] < nums[last_significant_number_index] and nums[i] < nums[i + 1]:
-                count += 1
-            last_significant_number_index = i
-        return count
+  def countHillValley(self, nums: list[int]) -> int:
+    ans = 0
+    left = nums[0]
+
+    for i in range(1, len(nums) - 1):
+      if (left < nums[i] and nums[i] > nums[i + 1] or  # the hill
+              left > nums[i] and nums[i] < nums[i + 1]):  # the valley
+        ans += 1
+        left = nums[i]
+
+    return ans
