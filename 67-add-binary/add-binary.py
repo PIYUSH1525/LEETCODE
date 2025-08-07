@@ -12,8 +12,8 @@ class Solution:
             carry = summ//2 
             i-=1
             j-=1
-        if carry >0:
-            res.append(carry)
+        # if carry >0:
+        #     res.append(carry)
         return "".join(res[::-1])
 
         
