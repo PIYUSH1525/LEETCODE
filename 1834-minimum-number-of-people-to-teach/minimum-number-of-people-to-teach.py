@@ -1,25 +1,22 @@
 class Solution:
-    def minimumTeachings(
-        self, n: int, languages: List[List[int]], friendships: List[List[int]]
-    ) -> int:
-        def can_communicate(user1: int, user2: int) -> bool:
-            user1 = languages[user1 - 1]
-            user2 = languages[user2 - 1]
-            for lang1 in user1:
-                for lang2 in user2:
-                    if lang1 == lang2:
-                        return True
-            return False
-        users_needing = set()
-        for user1, user2 in friendships:
-            if not can_communicate(user1, user2):
-                users_needing.add(user1)
-                users_needing.add(user2)
-        language_count = Counter()
-        for user in users_needing:
-            for language_id in languages[user - 1]:
-                language_count[language_id] += 1
-        if language_count:
-            return len(users_needing) - max(language_count.values())
-        else:
-            return 0
+    def minimumTeachings(self, n: int, languages: list[list[int]], friendships: list[list[int]]) -> int:
+        sad_users = set() 
+        for friends in friendships:
+            u = friends[0] - 1
+            v = friends[1] - 1
+            lang_set = set(languages[u])
+            can_talk = False
+            for lang in languages[v]:
+                if lang in lang_set:
+                    can_talk = True
+                    break
+            if not can_talk:
+                sad_users.add(u)
+                sad_users.add(v)
+        language_count = [0] * (n + 1)
+        most_known_lang = 0
+        for user in sad_users:
+            for lang in languages[user]:
+                language_count[lang] += 1
+                most_known_lang = max(most_known_lang, language_count[lang])
+        return len(sad_users) - most_known_lang
