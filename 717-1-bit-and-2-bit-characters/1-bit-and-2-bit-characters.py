@@ -1,7 +1,9 @@
 class Solution:
     def isOneBitCharacter(self, bits: List[int]) -> bool:
-        current_index = 0
-        array_length = len(bits)
-        while current_index < array_length - 1:
-            current_index += bits[current_index] + 1
-        return current_index == array_length - 1
+        i = 0
+        while i < len(bits) - 1:
+            if bits[i] == 1:
+                i += 2  
+            else:
+                i += 1  
+        return i == len(bits) - 1
