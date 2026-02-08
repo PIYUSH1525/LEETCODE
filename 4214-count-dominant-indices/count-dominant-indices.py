@@ -1,9 +1,11 @@
 class Solution:
     def dominantIndices(self, nums: List[int]) -> int:
-        count = 0 
         n = len(nums)
-        for i in range(n-1):
-            avg = sum(nums[i+1:])/len(nums[i+1:])
-            if nums[i] > avg:
-                count+=1
-        return count
+        def solve(i, s_sum, s_count):
+            if i < 0:
+                return 0
+            is_dominant = 0
+            if s_count > 0 and nums[i] > (s_sum / s_count):
+                is_dominant = 1
+            return is_dominant + solve(i - 1, s_sum + nums[i], s_count + 1)
+        return solve(n - 2, nums[n - 1], 1)
