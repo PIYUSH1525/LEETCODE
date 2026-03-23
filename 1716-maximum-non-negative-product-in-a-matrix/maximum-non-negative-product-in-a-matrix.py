@@ -16,7 +16,6 @@ class Solution:
         for row in range(1, rows):
             for col in range(1, cols):
                 current_value = grid[row][col]
-              
                 if current_value >= 0:
                     min_from_above = dp[row - 1][col][0]
                     min_from_left = dp[row][col - 1][0]
