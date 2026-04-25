@@ -1,59 +1,43 @@
-from dataclasses import dataclass
-@dataclass(frozen=True)
-class Sequence:
-  startX: int
-  startY: int
-  endX: int
-  endY: int
-  length: int
-
-  def __iter__(self):
-    yield self.startX
-    yield self.startY
-    yield self.endX
-    yield self.endY
-    yield self.length
-
-
 class Solution:
-  def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
-    ordered = self._getOrderedPoints(side, points)
+    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+        a = []
+        for x, y in points:
+            if x == 0:
+                a.append(y)
+            elif y == side:
+                a.append(side + x)
+            elif x == side:
+                a.append(side * 3 - y)
+            else:
+                a.append(side * 4 - x)
+        a.sort()
 
-    def isValidDistance(m: int) -> bool:
-      dq = collections.deque([Sequence(*ordered[0], *ordered[0], 1)])
-      maxLength = 1
+        def check(low: int) -> bool:
+            idx = [0] * k
+            cur = a[0]
+            for j in range(1, k):
+                i = bisect_left(a, cur + low)
+                if i == len(a):
+                    return False
+                idx[j] = i
+                cur = a[i]
+            if cur - a[0] <= side * 4 - low:
+                return True
+            for idx[0] in range(1, idx[1]):
+                for j in range(1, k):
+                    while a[idx[j]] < a[idx[j - 1]] + low:
+                        idx[j] += 1
+                        if idx[j] == len(a):
+                            return False
+                if a[idx[-1]] - a[idx[0]] <= side * 4 - low:
+                    return True
+            return False
 
-      for i in range(1, len(ordered)):
-        x, y = ordered[i]
-        startX, startY = ordered[i]
-        length = 1
-        while dq and abs(x - dq[0].endX) + abs(y - dq[0].endY) >= m:
-          if (abs(x - dq[0].startX) + abs(y - dq[0].startY) >= m
-                  and dq[0].length + 1 >= length):
-            startX = dq[0].startX
-            startY = dq[0].startY
-            length = dq[0].length + 1
-            maxLength = max(maxLength, length)
-          dq.popleft()
-        dq.append(Sequence(startX, startY, x, y, length))
-
-      return maxLength >= k
-
-    l = 0
-    r = side
-
-    while l < r:
-      m = (l + r + 1) // 2
-      if isValidDistance(m):
-        l = m
-      else:
-        r = m - 1
-
-    return l
-  def _getOrderedPoints(self, side: int, points: list[list[int]]) -> list[list[int]]:
-    left = sorted([(x, y) for x, y in points if x == 0 and y > 0])
-    top = sorted([(x, y) for x, y in points if x > 0 and y == side])
-    right = sorted([(x, y) for x, y in points if x == side and y < side],
-                   reverse=True)
-    bottom = sorted([(x, y) for x, y in points if y == 0], reverse=True)
-    return left + top + right + bottom
+        left, right = 1, side + 1
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                left = mid
+            else:
+                right = mid
+        return left
