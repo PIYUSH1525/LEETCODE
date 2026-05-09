@@ -1,29 +1,30 @@
 class Solution:
-  def rotateGrid(self, grid: list[list[int]], k: int) -> list[list[int]]:
-    m = len(grid)
-    n = len(grid[0])
-    t = 0  # the top
-    l = 0  # the left
-    b = m - 1  # the bottom
-    r = n - 1  # the right
-
-    while t < b and l < r:
-      elementInThisLayer = 2 * (b - t + 1) + 2 * (r - l + 1) - 4
-      netRotations = k % elementInThisLayer
-      for _ in range(netRotations):
-        topLeft = grid[t][l]
-        for j in range(l, r):
-          grid[t][j] = grid[t][j + 1]
-        for i in range(t, b):
-          grid[i][r] = grid[i + 1][r]
-        for j in range(r, l, - 1):
-          grid[b][j] = grid[b][j - 1]
-        for i in range(b, t, -1):
-          grid[i][l] = grid[i - 1][l]
-        grid[t + 1][l] = topLeft
-      t += 1
-      l += 1
-      b -= 1
-      r -= 1
-
-    return grid
+    def rotateGrid(self, grid: List[List[int]], k: int) -> List[List[int]]:
+        m, n = len(grid), len(grid[0])
+        nlayer = min(m // 2, n // 2)   
+        for layer in range(nlayer):
+            r = []   
+            c = []   
+            val = []   
+            for i in range(layer, m - layer - 1):   
+                r.append(i)
+                c.append(layer)
+                val.append(grid[i][layer])
+            for j in range(layer, n - layer - 1):  
+                r.append(m - layer - 1)
+                c.append(j)
+                val.append(grid[m-layer-1][j])
+            for i in range(m - layer - 1, layer, -1):  
+                r.append(i)
+                c.append(n - layer - 1)
+                val.append(grid[i][n-layer-1])
+            for j in range(n - layer - 1, layer, -1):   
+                r.append(layer)
+                c.append(j)
+                val.append(grid[layer][j])
+            total = len(val)  
+            kk = k % total   
+            for i in range(total):
+                idx = (i + total - kk) % total   
+                grid[r[i]][c[i]] = val[idx]
+        return grid
