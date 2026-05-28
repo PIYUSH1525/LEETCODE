@@ -5,10 +5,7 @@ class TrieNode:
     self.length = math.inf
     self.index = -1
 class Solution:
-  def stringIndices(
-      self,
-      wordsContainer: list[str],
-      wordsQuery: list[str],) -> list[int]:
+  def stringIndices(self,wordsContainer: list[str],wordsQuery: list[str],) -> list[int]:
     ans = []
     root = TrieNode()
     minIndex = min(enumerate(wordsContainer), key=lambda x: len(x[1]))[0]
