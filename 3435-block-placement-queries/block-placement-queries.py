@@ -1,56 +1,44 @@
 from sortedcontainers import SortedList
-
-
-class FenwickTree:
-  def __init__(self, n: int):
-    self.vals = [0] * (n)
-
-  def maximize(self, i: int, val: int) -> None:
-    while i < len(self.vals):
-      self.vals[i] = max(self.vals[i], val)
-      i += FenwickTree.lowtree(i)
-
-  def get(self, i: int) -> int:
-    res = 0
-    while i > 0:
-      res = max(res, self.vals[i])
-      i -= FenwickTree.lowtree(i)
-    return res
-
-  @staticmethod
-  def lowtree(i: int) -> int:
-    return i & -i
-
-
+    
 class Solution:
-  def getResults(self, queries: list[list[int]]) -> list[bool]:
-    n = min(50000, len(queries) * 3)
-    ans = []
-    tree = FenwickTree(n + 1)
-    obstacles = SortedList([0, n])
-
-    for query in queries:
-      type = query[0]
-      if type == 1:
-        x = query[1]
-        obstacles.add(x)
-
-    for x1, x2 in itertools.pairwise(obstacles):
-      tree.maximize(x2, x2 - x1)
-
-    for query in reversed(queries):
-      type = query[0]
-      x = query[1]
-      if type == 1:
-        i = obstacles.index(x)
-        next = obstacles[i + 1]
-        prev = obstacles[i - 1]
-        obstacles.remove(x)
-        tree.maximize(next, next - prev)
-      else:
-        sz = query[2]
-        i = obstacles.bisect_right(x)
-        prev = obstacles[i - 1]
-        ans.append(tree.get(prev) >= sz or x - prev >= sz)
-
-    return ans[::-1]
+    def getResults(self, queries: List[List[int]]) -> List[bool]:
+        sl = SortedList()
+        n = min(5 * 10 ** 4, len(queries) * 3)
+        sl.add(0)
+        sl.add(n)
+        
+        ans = []
+        for q in queries:
+            if q[0] == 1:
+                x = q[1]
+                sl.add(x)
+        gap = SortedList()
+        gap.add((0, 0))
+        curr = 0
+        for x, y in pairwise(sl):
+            if (g := y - x) > curr:
+                gap.add((y, g))
+                curr = g
+        
+        for q in reversed(queries):
+            if q[0] == 1:
+                x = q[1]
+                index = sl.index(x)
+                after = sl[index + 1]
+                before = sl[index - 1]
+                sl.remove(x)
+                g = after - before
+                index = gap.bisect_left((x, 0))
+                while index < len(gap) and gap[index][1] <= g:
+                    gap.pop(index)
+                if gap[index - 1][1] < g:
+                    gap.add((after, g))
+            else:
+                _, x, sz = q
+                index = sl.bisect_right(x)
+                before = sl[index - 1]
+                index = gap.bisect_right((before, math.inf)) - 1
+                ans.append((x - before) >= sz or gap[index][1] >= sz)
+            
+        ans.reverse()
+        return ans
