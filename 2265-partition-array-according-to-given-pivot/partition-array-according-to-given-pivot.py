@@ -1,14 +1,15 @@
 class Solution:
     def pivotArray(self, nums: List[int], pivot: int) -> List[int]:
-        less_than_pivot = []
-        equal_to_pivot = []
-        greater_than_pivot = []
-        for num in nums:
-            if num < pivot:
-                less_than_pivot.append(num)
-            elif num == pivot:
-                equal_to_pivot.append(num)
+        x=[]
+        y=[]
+        z=[]
+        for i in nums:
+            if i<pivot:
+                x.append(i)
+            elif i==pivot:
+                y.append(i)
             else:
-                greater_than_pivot.append(num)
-      
-        return less_than_pivot + equal_to_pivot + greater_than_pivot
+                z.append(i)
+        return x+y+z
+
+        
