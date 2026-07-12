@@ -1,11 +1,6 @@
+from typing import List
+from bisect import bisect_right
 class Solution:
     def arrayRankTransform(self, arr: List[int]) -> List[int]:
-        sorted_unique = sorted(set(arr))
-        rank = {}
-        for i, num in enumerate(sorted_unique):
-            rank[num] = i + 1
-        result = []
-        for num in arr:
-            result.append(rank[num])
-        
-        return result
+        unique_sorted = sorted(set(arr))
+        return [bisect_right(unique_sorted, x) for x in arr]
