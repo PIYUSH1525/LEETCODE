@@ -1,17 +1,11 @@
-from collections import defaultdict
-from typing import List
+MAP_COUNT = [2] + [int(not (idx & 240) or not (idx & 60) or not (idx & 15))
+                    for idx in range(1, 256)]
+MAP_POWER = [0, 0, 1, 2, 4, 8, 16, 32, 64, 128, 0]
 
 class Solution:
-    def maxNumberOfFamilies(self, n: int, reservedSeats: List[List[int]]) -> int:
-        reserved_by_row = defaultdict(int)
+    def maxNumberOfFamilies(self, n: int, reservedSeats) -> int:
+        map_count, map_power = MAP_COUNT, MAP_POWER
+        rows  = collections.defaultdict(int)
         for row, seat in reservedSeats:
-            reserved_by_row[row] |= 1 << (10 - seat)
-        family_group_masks = (0b0111100000, 0b0000011110, 0b0001111000)
-        total_families = (n - len(reserved_by_row)) * 2
-        for row_reservation in reserved_by_row.values():
-            for mask in family_group_masks:
-                if (row_reservation & mask) == 0:
-                    row_reservation |= mask
-                    total_families += 1
-      
-        return total_families
+            rows[row] |= map_power[seat]
+        return sum(map_count[row] for row in rows.values()) + 2*(n - len(rows))
